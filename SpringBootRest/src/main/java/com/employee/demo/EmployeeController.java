@@ -47,9 +47,8 @@ public class EmployeeController {
 					.when()
 					.get("/public/calendarByPin?pincode=" + pin + "&date="
 							+ DateTimeFormatter.ofPattern("dd-MM-yyyy").format(LocalDate.now().plusDays(1)))
-					.then().extract().response().body().jsonPath().getJsonObject("$");
+					.then().log().all().extract().response().body().jsonPath().getJsonObject("$");
 			
-			System.out.println(centers);
 			List<Map<String, Object>> arr = (List<Map<String, Object>>) centers.get("centers");
 			for (Object ele : arr) {
 				List<Map<String, Object>> sessions = (List<Map<String, Object>>) ((Map<String, Object>) ele)
