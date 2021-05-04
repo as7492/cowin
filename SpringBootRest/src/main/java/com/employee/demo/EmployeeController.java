@@ -26,16 +26,15 @@ public class EmployeeController {
 	@GetMapping("/cowin/bangalore")
 	public String getAllEmp() throws InterruptedException {
 		Executors.newCachedThreadPool().submit(() -> {
-				checkVaccination("560026");
-//			while (true) {
-//				checkVaccination("560001");
-//				checkVaccination("560017");
-//				checkVaccination("560020");
-//				checkVaccination("560076");
-//				checkVaccination("560078");
-//				
-//				Thread.sleep(10000);
-//			}
+			while (true) {
+				checkVaccination("560017");
+				checkVaccination("560020");
+				checkVaccination("560066");
+				checkVaccination("560076");
+				checkVaccination("560078");
+				
+				Thread.sleep(10000);
+			}
 		});
 		return "Proceess Triggered Successfully";
 	}
