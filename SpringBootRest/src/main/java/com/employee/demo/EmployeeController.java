@@ -5,9 +5,11 @@ import static javax.mail.internet.InternetAddress.parse;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.Executors;
 
 import javax.mail.Message;
@@ -27,12 +29,12 @@ public class EmployeeController {
 	public String getAllEmp() throws InterruptedException {
 		Executors.newCachedThreadPool().submit(() -> {
 			while (true) {
-				checkVaccination("560017");
-				checkVaccination("560020");
-				checkVaccination("560066");
-				checkVaccination("560076");
-				checkVaccination("560078");
-				
+				checkVaccination("294");
+				checkVaccination("353");
+				checkVaccination("116");
+				checkVaccination("118");
+				checkVaccination("664");
+				System.out.println("Running");
 				Thread.sleep(10000);
 			}
 		});
@@ -42,11 +44,20 @@ public class EmployeeController {
 	@SuppressWarnings("unchecked")
 	public void checkVaccination(String pin) {
 		try {
-			Map centers = (Map<String, Object>) given().baseUri("https://cdn-api.co-vin.in/api/v2/appointment/sessions")
+			
+			Random random = new Random();
+			
+			Map<String, String> headers = new HashMap<String, String>();
+			headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+			headers.put("Connection", "keep-alive");
+			
+			headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0."+random.nextInt(999)+".93 Safari/537.36");
+			
+			Map centers = (Map<String, Object>) given().baseUri("https://cdn-api.co-vin.in/api/v2/appointment/sessions").headers(headers)
 					.when()
-					.get("/public/calendarByPin?pincode=" + pin + "&date="
-							+ DateTimeFormatter.ofPattern("dd-MM-yyyy").format(LocalDate.now().plusDays(1)))
-					.then().log().all().extract().response().body().jsonPath().getJsonObject("$");
+					.get("/public/calendarByDistrict?district_id=" + pin + "&date="
+							+ DateTimeFormatter.ofPattern("dd-MM-yyyy").format(LocalDate.now()))
+					.then().extract().response().body().jsonPath().getJsonObject("$");
 			
 			List<Map<String, Object>> arr = (List<Map<String, Object>>) centers.get("centers");
 			for (Object ele : arr) {
@@ -56,7 +67,7 @@ public class EmployeeController {
 				for (Object session : sessions) {
 					String cap = ((Map<String, Object>) session).get("available_capacity").toString();
 					String age = ((Map<String, Object>) session).get("min_age_limit").toString();
-					if (Integer.parseInt(cap) > 0 && Integer.parseInt(age) == 45) {
+					if (Float.parseFloat(cap) > 1 && Integer.parseInt(age) == 18) {
 						sendMail("Available Capacity - " + ((Map<String, Object>) session).get("available_capacity").toString()
 								+ ", Date - " + ((Map<String, Object>) session).get("date").toString() + ", Pincode -"
 								+ pincode);
@@ -64,12 +75,13 @@ public class EmployeeController {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			try {
-				Thread.sleep(30000);
+				Thread.sleep(900000);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
+			System.out.println("Wait over after error");
 		}
 	}
 
@@ -101,6 +113,10 @@ public class EmployeeController {
 	}
 
 	public static void sendMail(String content) {
-		send("lalitamor1994@gmail.com", "A@d!ty@m0r", "lalitamor01@gmail.com,singhanurag66@gmail.com", content);
+		if(content.contains("560")) {
+			send("anurag.singh741992@gmail.com", "sadhvi29712", "lalitamor01@gmail.com,singhanurag66@gmail.com,ravi.daga3425@gmail.com", content);
+		}else {
+			send("anurag.singh741992@gmail.com", "sadhvi29712", "lalitamor01@gmail.com,singhanurag66@gmail.com", content);
+		}
 	}
 }
