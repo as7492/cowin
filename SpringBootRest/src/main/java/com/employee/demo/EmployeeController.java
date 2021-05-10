@@ -37,9 +37,11 @@ public class EmployeeController {
 //				checkVaccination("664");
 				
 				checkVaccinationByPin("483501");
+				checkVaccinationByPin("411057");
+				checkVaccinationByPin("411033");
 				
 				System.out.println("Running");
-				Thread.sleep(60000);
+				Thread.sleep(30000);
 			}
 		});
 		return "Proceess Triggered Successfully";

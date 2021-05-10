@@ -1,0 +1,11 @@
+# Ignore Gradle build output directory
+build
+
+.idea
+
+**/.classpath
+**/.project
+**/.settings/*
+**/*.class
+**/.DS_Store
+**/target
