@@ -27,15 +27,19 @@ public class EmployeeController {
 
 	@GetMapping("/cowin/bangalore")
 	public String getAllEmp() throws InterruptedException {
+		System.out.println("API Invoked");
 		Executors.newCachedThreadPool().submit(() -> {
 			while (true) {
 				checkVaccination("294");
-				checkVaccination("353");
-				checkVaccination("116");
-				checkVaccination("118");
-				checkVaccination("664");
+				checkVaccination("265");
+				checkVaccination("276");
+//				checkVaccination("353");
+//				checkVaccination("664");
+				
+				checkVaccinationByPin("483501");
+				
 				System.out.println("Running");
-				Thread.sleep(10000);
+				Thread.sleep(60000);
 			}
 		});
 		return "Proceess Triggered Successfully";
@@ -77,7 +81,51 @@ public class EmployeeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				Thread.sleep(900000);
+				Thread.sleep(300000);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			System.out.println("Wait over after error");
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void checkVaccinationByPin(String pin) {
+		try {
+			
+			Random random = new Random();
+			
+			Map<String, String> headers = new HashMap<String, String>();
+			headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+			headers.put("Connection", "keep-alive");
+			
+			headers.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0."+random.nextInt(999)+".93 Safari/537.36");
+			
+			Map centers = (Map<String, Object>) given().baseUri("https://cdn-api.co-vin.in/api/v2/appointment/sessions").headers(headers)
+					.when()
+					.get("/public/calendarByPin?pincode=" + pin + "&date="
+							+ DateTimeFormatter.ofPattern("dd-MM-yyyy").format(LocalDate.now()))
+					.then().extract().response().body().jsonPath().getJsonObject("$");
+			
+			List<Map<String, Object>> arr = (List<Map<String, Object>>) centers.get("centers");
+			for (Object ele : arr) {
+				List<Map<String, Object>> sessions = (List<Map<String, Object>>) ((Map<String, Object>) ele)
+						.get("sessions");
+				String pincode = ((Map<?, ?>) ele).get("pincode").toString();
+				for (Object session : sessions) {
+					String cap = ((Map<String, Object>) session).get("available_capacity").toString();
+					String age = ((Map<String, Object>) session).get("min_age_limit").toString();
+					if (Float.parseFloat(cap) > 1 && Integer.parseInt(age) == 18) {
+						sendMail("Available Capacity - " + ((Map<String, Object>) session).get("available_capacity").toString()
+								+ ", Date - " + ((Map<String, Object>) session).get("date").toString() + ", Pincode -"
+								+ pincode);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				Thread.sleep(300000);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
@@ -113,10 +161,6 @@ public class EmployeeController {
 	}
 
 	public static void sendMail(String content) {
-		if(content.contains("560")) {
-			send("anurag.singh741992@gmail.com", "sadhvi29712", "lalitamor01@gmail.com,singhanurag66@gmail.com,ravi.daga3425@gmail.com", content);
-		}else {
-			send("anurag.singh741992@gmail.com", "sadhvi29712", "lalitamor01@gmail.com,singhanurag66@gmail.com", content);
-		}
+		send("anurag.singh741992@gmail.com", "sadhvi29712", "lalitamor01@gmail.com,singhanurag66@gmail.com", content);
 	}
 }
