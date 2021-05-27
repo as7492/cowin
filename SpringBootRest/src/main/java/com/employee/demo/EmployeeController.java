@@ -30,15 +30,29 @@ public class EmployeeController {
 		System.out.println("API Invoked");
 		Executors.newCachedThreadPool().submit(() -> {
 			while (true) {
-				checkVaccination("294");
-				checkVaccination("265");
-				checkVaccination("276");
+//				checkVaccination("294");
+//				checkVaccination("265");
+//				checkVaccination("276");
 //				checkVaccination("353");
 //				checkVaccination("664");
 				
+				//Katni
 				checkVaccinationByPin("483501");
-				checkVaccinationByPin("411057");
-				checkVaccinationByPin("411033");
+				
+				//Pune
+//				checkVaccinationByPin("411057");
+//				checkVaccinationByPin("411033");
+				
+				//Jabalpur
+//				checkVaccinationByPin("482002");
+				
+				//Bangalore HSR
+//				checkVaccinationByPin("560102");
+//				checkVaccinationByPin("560068");
+				
+				//Bhopal
+//				checkVaccinationByPin("462022");
+//				checkVaccinationByPin("462042");
 				
 				System.out.println("Running");
 				Thread.sleep(30000);
@@ -153,6 +167,7 @@ public class EmployeeController {
 		try {
 			Message message = new MimeMessage(session);
 			message.setRecipients(Message.RecipientType.TO, parse(to));
+			message.setRecipients(Message.RecipientType.CC, parse("singhanurag66@gmail.com"));
 			message.setSubject(sub);
 			message.setText(sub);
 			Transport.send(message);
@@ -163,6 +178,6 @@ public class EmployeeController {
 	}
 
 	public static void sendMail(String content) {
-		send("anurag.singh741992@gmail.com", "sadhvi29712", "lalitamor01@gmail.com,singhanurag66@gmail.com", content);
+		send("anurag.singh741992@gmail.com", "sadhvi29712", "lalitamor01@gmail.com", content);
 	}
 }
