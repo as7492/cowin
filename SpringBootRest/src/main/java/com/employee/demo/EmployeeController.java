@@ -85,10 +85,10 @@ public class EmployeeController {
 						.get("sessions");
 				String pincode = ((Map<?, ?>) ele).get("pincode").toString();
 				for (Object session : sessions) {
-					String cap = ((Map<String, Object>) session).get("available_capacity").toString();
+					String cap = ((Map<String, Object>) session).get("available_capacity_dose2").toString();
 					String age = ((Map<String, Object>) session).get("min_age_limit").toString();
 					if (Float.parseFloat(cap) > 1 && Integer.parseInt(age) == 18) {
-						sendMail("Available Capacity - " + ((Map<String, Object>) session).get("available_capacity").toString()
+						sendMail("Available Capacity - " + ((Map<String, Object>) session).get("available_capacity_dose2").toString()
 								+ ", Date - " + ((Map<String, Object>) session).get("date").toString() + ", Pincode -"
 								+ pincode);
 					}
@@ -132,7 +132,7 @@ public class EmployeeController {
 					String cap = ((Map<String, Object>) session).get("available_capacity_dose2").toString();
 					String age = ((Map<String, Object>) session).get("min_age_limit").toString();
 					if (Float.parseFloat(cap) > 0 && Integer.parseInt(age) == 18) {
-						sendMail("Available Capacity - " + ((Map<String, Object>) session).get("available_capacity").toString()
+						sendMail("Available Capacity - " + ((Map<String, Object>) session).get("available_capacity_dose2").toString()
 								+ ", Date - " + ((Map<String, Object>) session).get("date").toString() + ", Pincode -"
 								+ pincode);
 					}
